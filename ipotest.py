@@ -1,12 +1,19 @@
+import discord
+from discord.ext import commands
 from bs4 import BeautifulSoup
 import requests
 
-symbol = "mlbs"
+client = commands.Bot(command_prefix="!")
 
 
-def a():
+@client.event
+async def on_ready():
+    print("bot is ready")
+
+
+def f(symbol):
     html_text = requests.get(
-        f"https://merolagani.com/CompanyDetail.aspx?symbol={symbol}"
+        f"https://merolagani.com/CompanyDetail.aspx?symbol={symbol.lower()}"
     ).text
 
     soup = BeautifulSoup(html_text, "lxml")
@@ -27,4 +34,13 @@ def a():
 
                 for print_LTP in LTP_find:
                     LTP = print_LTP.find("span", class_="text-increase").text
-                    return f"{Title} \n LTP: {LTP}"
+                    return f"{Title} \n LTP: Rs.{LTP}"
+
+
+@client.command(aliases=["ipo"])
+async def _IPO(ctx, *, symbol):
+
+    await ctx.send(f(symbol))
+
+
+client.run("ODU2Nzc3MzQwMDc1MTE0NTI2.YNF-FA.aDQGH22-0FEhwNEAJYT15z3cF6s")
